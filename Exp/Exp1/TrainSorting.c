@@ -55,6 +55,23 @@ int popStack(Stack *stack){
     return value;
 }
 
+Quene* CreateQuene(int capacity){
+    Quene *newQuene = malloc(sizeof(Quene));
+    if (newQuene == NULL){
+        prinf("内存分配错误");
+        exit(1);
+    }
+    newQuene -> capacity = capacity;
+    newQuene -> front = 0;
+    newQuene -> last = capacity - 1;
+    newQuene -> data = malloc(newQuene ->capacity * sizeof(int));
+    if (newQuene -> data == NULL){
+        prinf("内存分配错误");
+        exit(1);
+    }
+}
+
+
 int main(){
     return 0;
 }
