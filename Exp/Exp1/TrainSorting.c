@@ -25,7 +25,7 @@ Stack* CreatStack(int capacity){
     }
     newStack -> top = -1;
     newStack -> capacity = capacity;
-    newStack -> data = malloc(sizeof(int) * newStack -> capacity);
+    newStack -> data = malloc(newStack -> capacity * sizeof(int));
     if (newStack -> data == NULL){
         printf("内存分配错误");
         exit(1);
