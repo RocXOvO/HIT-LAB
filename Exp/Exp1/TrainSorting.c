@@ -56,7 +56,7 @@ int popStack(Stack *stack){
 }
 
 Quene* CreateQuene(int capacity){
-    Quene *newQuene = malloc(sizeof(Quene));
+    Quene *newQuene = malloc(sizeof(Quene));  
     if (newQuene == NULL){
         prinf("内存分配错误");
         exit(1);
