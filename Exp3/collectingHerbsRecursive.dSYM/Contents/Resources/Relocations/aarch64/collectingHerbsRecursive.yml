@@ -1,0 +1,5 @@
+---
+triple:          'arm64-apple-darwin'
+binary-path:     '/Users/duchongyang/Documents/C/Exp/Exp3/collectingHerbsRecursive'
+relocations:     []
+...

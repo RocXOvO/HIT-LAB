@@ -44,7 +44,15 @@ typedef struct{
 
 Quene* initQuene(int capacity){
     Quene *quene = malloc(sizeof(Quene));
+    if (quene == NULL) {
+        exit(1);
+    }
     quene->data = malloc(capacity * sizeof(struct TreeNode*));
+    if (quene->data == NULL) {
+        free(quene);
+        return NULL;
+    }
+    return quene;
     quene->front = 0;
     quene->rear = 0;
     quene->capacity = capacity;
@@ -68,7 +76,7 @@ struct TreeNode* dequene(Quene *quene){
 
 void printTree(struct TreeNode* root) {
     if (root == NULL){
-        printf("null");
+        printf("NULL");
         return;
     }
     Quene *treeQuene = initQuene(1000);
