@@ -4,7 +4,6 @@
 /******************* 排序 *******************/
 // 这个res_num[i]
 void sortJumbled(int *mapping, int *nums, int numsSize) {
-    int *res_nums = (int *)malloc(numsSize * sizeof(int));
     typedef struct{
         int num;// 原值
         int mapped;// 存映射后的值
