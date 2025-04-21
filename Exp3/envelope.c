@@ -20,20 +20,18 @@ int maxEnvelopes(Envelope* envelopes, int n) {
             }
         }
     }
-    int cnt = 0;
     int *dp = malloc(sizeof(int) * n);
     int maxlen = 1;
-    for (int i = 0; i < n; i++) {
+    for (int i = 0; i < n; i++){
         dp[i] = 1;
-        for (int j = 0; j < i; j++) {
-            if (envelopes[j].height < envelopes[i].height) {
-                if (dp[j] + 1 > dp[i]) {
-                    dp[i] = dp[j] + 1;
-                }
+        for (int j = 0; j < i; j++){
+            if (envelopes[j].height < envelopes[i].height && dp[i] < dp[j] + 1) {
+                dp[i] = dp[j] + 1;
             }
         }
         if (maxlen < dp[i]) maxlen = dp[i];
     }
+    free(dp);
     return maxlen;
 }
 

@@ -8,7 +8,7 @@ void sortJumbled(int *mapping, int *nums, int numsSize) {
     typedef struct{
         int num;// 原值
         int mapped;// 存映射后的值
-        int index;
+        int index;// 存原来的顺序
     } numMap;
     numMap *arr = malloc(numsSize * sizeof(numMap));
     for (int i = 0; i < numsSize; i++){
