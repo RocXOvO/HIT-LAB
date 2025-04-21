@@ -5,22 +5,22 @@ typedef struct{
     int time;
 }herb;
 
-int recursiveCollectHelper(herb *s, int totaltime, int numstype) {
+int recursiveCollectHelper(herb *s, int totaltime, int numsType) {
     if (totaltime <= 0){
         return 0;
     }
     int maxvalue = 0;
-    for (int i = 0; i < numstype ; i++) {
+    for (int i = 0; i < numsType ; i++) {
         if (totaltime >= s[i].time){
-            int v = recursiveCollectHelper(s,totaltime - s[i].time, numstype) + s[i].value;
+            int v = recursiveCollectHelper(s,totaltime - s[i].time, numsType) + s[i].value;
             if (v > maxvalue) maxvalue = v;
         }
     }
     return maxvalue;
 }
 
-int recursiveCollect(herb *s, int totaltime, int numstype) {
-    return recursiveCollectHelper(s, totaltime, numstype);
+int recursiveCollect(herb *s, int totaltime, int numsType) {
+    return recursiveCollectHelper(s, totaltime, numsType);
 }
 int main(){
     int totalTime;
