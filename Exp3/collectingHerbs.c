@@ -11,9 +11,11 @@ int dynamicCollect(herb *s, int numsType, int totalTime) {
     }
     int *dp = malloc(sizeof(int) * (totalTime + 1));
     for (int i = 0; i < totalTime; i++) dp[i] = 0;
+    // 对每一种草药遍历
     for (int i = 0; i < numsType; i++) {
         int ti = s[i].time; 
         int vi = s[i].value;
+        // 记录当前草药的最优， 三种草药都遍历一次，便得到最优解了。
         for (int t = ti; t <= totalTime; t++) {
             if (dp[t] < dp[t - ti] + vi) {
                 dp[t] = dp[t - ti] + vi;

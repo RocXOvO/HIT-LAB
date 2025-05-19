@@ -12,7 +12,7 @@ int recursiveCollectHelper(herb *s, int totaltime, int numsType) {
     int maxvalue = 0;
     for (int i = 0; i < numsType ; i++) {
         if (totaltime >= s[i].time){
-            int v = recursiveCollectHelper(s,totaltime - s[i].time, numsType) + s[i].value;
+            int v = recursiveCollectHelper(s, totaltime - s[i].time, numsType) + s[i].value;
             if (v > maxvalue) maxvalue = v;
         }
     }

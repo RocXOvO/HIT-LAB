@@ -11,7 +11,7 @@ char* frequencySort(char* s) {
     typedef struct{
         int frequency;
         char ascii;
-    }Char;
+    } Char;
     Char arr[256];
     int arrSize = 0;
     for (int i = 0; i < 256; i++) {
