@@ -75,20 +75,40 @@ void printPath(int d, int *diameter_path, Graph g)
  * @return 连通返回1，否则返回0
  */
 int isConnected(Graph g) {
-    // 构造图
-
-    int N, E;
-    scanf("%d", &N);
-    scanf("%d", &E);
-    int *degree;
-    degree = malloc(sizeof(int) * g.N);
-    nodeDegree(g, degree);
-    
-    // 判断连通
-    for (int i = 0; i < g.N; i++){
-        if (degree[i] != 0) return 1;
-        else return 0;
+    // BFS
+    if (g.N == 0 || g.N == 1) {
+        return 1;
     }
+    // 初始化
+    int *visited = malloc(sizeof(int) * g.N);
+    // 0 表示未访问 1表示已经访问过了
+    int visited_num = 0;
+    for (int i = 0; i < g.N; i++) {
+        visited[i] = 0;
+    }
+
+    // 构建一个队列
+    int *queue = malloc(sizeof(int) * g.N);
+    int head = 0;
+    int tail = 0;
+    // 随便选一个节点作为开始节点
+    int start_node = 0;
+    queue[tail++] = start_node;
+    visited[start_node] = 1;
+    visited_num = 1;
+    while (head < tail) {
+        int visited_node = queue[head++];
+        for (int i = 0; i < g.N; i++) {
+            if (g.matrix[visited_node][i] != max_dis && g.matrix[visited_node][i] != 0 && visited[i] == 0) {
+                queue[tail++] = i;
+                visited[i] = 1;
+                visited_num++;
+            }
+        }
+    }
+    free(visited);
+    free(queue);
+    return visited_num == g.N;
 }
 
 
@@ -98,13 +118,16 @@ int isConnected(Graph g) {
  * @param node_degree 将每个点的度写到这个数组中
  */
 void nodeDegree(Graph g, int *node_degree) {
-    int node1, node2, distance;
-    for (int i = g.E; i > 0 ; i--){
-        scanf("%d %d %d", &node1, &node2, &distance);
-        g.matrix[node1][node2] = distance;
-        g.matrix[node2][node1] = distance;
-        node_degree[node1]++;
-        node_degree[node2]++;
+    for (int i = 0; i < g.N; i++) {
+        node_degree[i] = 0;
+    }
+    for (int i = 0; i < g.N; i++) {
+        for (int j = i + 1; j < g.N; j++) {
+            if (g.matrix[i][j] != max_dis && g.matrix[i][j] != 0) {
+                node_degree[i]++;
+                node_degree[j]++;
+            }
+        }
     }
 
 }
@@ -115,14 +138,14 @@ void nodeDegree(Graph g, int *node_degree) {
  * @return 返回聚类系数
  */
 double clusteringCoefficient(Graph g) {
-    int total_clusting;
+    double total_clusting = 0;
     for (int i = 0; i < g.N; i++) {
         // 寻找每个节点的neighbor
         double clusting = 0;
         int *neighbor = malloc(sizeof(int) * g.N);
         int k = 0;
         for (int j = 0; j < g.N; j++) {
-            if (j != i && g.matrix[i][j] < max_dis) neighbor[k++] = j; // 当前这个节点的相邻节点，k表示当前节点有多少个，数列中存储的邻居是哪个。
+            if (j != i && g.matrix[i][j] != max_dis && g.matrix[i][j] != 0) neighbor[k++] = j; // 当前这个节点的相邻节点，k表示当前节点有多少个，数列中存储的邻居是哪个。
         }
 
         if (k < 2) {
@@ -130,14 +153,19 @@ double clusteringCoefficient(Graph g) {
             continue;
         }
         int links_cnt = 0;
+        // 循环neighbor，看neighbor会不会有连通，如果连通，则links_cnt++
         for (int node1 = 0; node1 < k; node1++) {
             for (int node2 = node1 + 1; node2 < k; node2++) {
-                if (g.matrix[node1][node2] != max_dis) {
+                if (g.matrix[neighbor[node1]][neighbor[node2]] != max_dis && g.matrix[neighbor[node1]][neighbor[node2]] != 0) {
                     links_cnt++;
                 }
             }
         }
+        // 计算单个节点的聚类值
+        clusting = (double)links_cnt / (double) (k * (k - 1) / 2);
+        total_clusting += clusting; 
     }
+    return total_clusting / g.N;
 }
 
 
@@ -151,7 +179,90 @@ double clusteringCoefficient(Graph g) {
  */
 int dijkstra(Graph g, int start, int end, int *path)
 {
-    //TODO
+    if (start < 0 || start > g.N - 1 || end < 0 || end > g.N - 1) {
+        printf("start或者end索引越界\n");
+        for (int i = 0; i < g.N; i++)path[i] = -1;
+        return max_dis;
+    }
+    int dist[g.N];
+    int prev[g.N];
+    int visited[g.N];
+    // 初始化
+    for (int i = 0; i < g.N; i++) {
+        dist[i] = max_dis;
+        prev[i] = -1; 
+        visited[i] = 0;
+        path[i] = -1;
+    }
+    dist[start] = 0;
+    // i表示的是迭代次数。只要迭代g.N - 1次就可以了
+    // 题目要求迭代到end处既可
+    for (int cnt = 0; cnt < g.N - 1; cnt++) {
+        int u = -1;// 迭代的节点
+        int min_dist = max_dis;
+        //选取当前最小的dist并且没有被访问过。
+        for (int j = 0; j < g.N;j++) {
+            if (!visited[j] && dist[j] < min_dist) {
+                min_dist = dist[j];
+                u = j;
+            }
+
+        }
+        // 如果没有节点则返回max_dis表示不能到达。
+        if (u == -1 || min_dist == max_dis) {
+            return max_dis;
+        }
+
+        visited[u] = 1; //表示该节点已经访问。
+
+        // 如果已经迭代到end处，那么直接就退出循环，u纳入集合中后，即为最短路径了。
+        if (u == end) {
+            break;
+        }
+
+        // 从u出发 更新一些节点的dist值
+        for (int i = 0; i < g.N; i++) {
+            if (!visited[i] && g.matrix[u][i] != 0 && g.matrix[u][i] != max_dis && dist[i] > dist[u] + g.matrix[u][i]) {
+                dist[i] = dist[u] + g.matrix[u][i];
+                prev[i] = u;
+            }
+        }
+    }
+    // 判断end是否可达，如果不可达，则不进入路径构建，直接返回
+    if (dist[end] == max_dis) {
+        return max_dis;
+    }
+
+    // 路径构建
+
+    int temp_path[g.N]; // 记录反向路径，后续变更
+    int current_node = end;
+    int count = 1;
+    // 迭代找路径，直到最后prev是-1
+    for (int i = 0; i < g.N; i++) {
+        if (prev[current_node] == -1) {
+            temp_path[i] = current_node;
+            break;
+        }
+        temp_path[i] = current_node;
+        current_node = prev[current_node];
+        count++;
+    }
+
+    // 反转temp_path既可得到正确的路径
+
+    for (int i = 0, j = count - 1; i < count && j >= 0; i++ ,j--) {
+        path[i] = temp_path[j];
+    }
+    return dist[end];
+}
+
+/**
+ * Floyd多源最短路径计算。
+ */
+void Floyd(Graph g) {
+    int dist[g.N][g.N];
+
 }
 
 
