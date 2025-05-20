@@ -261,8 +261,35 @@ int dijkstra(Graph g, int start, int end, int *path)
  * Floyd多源最短路径计算。
  */
 void Floyd(Graph g) {
-    int dist[g.N][g.N];
+    for (int k = 0; k < g.N; k++) {
+        for (int i = 0; i < g.N;i++) {
+            for (int j = 0; j < g.N; j++) {
+                if (g.matrix[i][k] != max_dis && g.matrix[k][j] != max_dis) {
+                    if (g.matrix[i][j] > g.matrix[i][k] + g.matrix[k][j]) {
+                        g.matrix[i][j] = g.matrix[i][k] + g.matrix[k][j];
+                    }
+                }
+            } 
+        }
+    }
 
+}
+/**
+ * 计算离心率
+ */
+
+int *Eccentricity(Graph g) {
+    int *eccentricity = malloc(sizeof(int) * g.N);
+    for (int i = 0; i < g.N; i++) {
+        int max_dist = 0;
+        for (int j = 0; j < g.N; j++) {
+            if (g.matrix[i][j] != 0 && g.matrix[i][j] != max_dis && g.matrix[i][j] > max_dist){
+                max_dist = g.matrix[i][j];
+            }
+        }
+        eccentricity[i] = max_dist;
+    }
+    return eccentricity;
 }
 
 
@@ -272,7 +299,16 @@ void Floyd(Graph g) {
  * @return 直径的长度
  */
 int Diameter(Graph g) {
-    //TODO
+    int *arr = malloc(sizeof(int) * g.N);
+    arr = Eccentricity(g);
+    int max = 0;
+    for (int i = 0; i < g.N; i++) {
+        if (arr[i] > max) {
+            max = arr[i];
+        }
+    }
+    free(arr);
+    return max;
 }
 
 
@@ -282,7 +318,16 @@ int Diameter(Graph g) {
  * @return 半径长度
  */
 int Radius(Graph g) {
-    //TODO
+    int *arr = malloc(sizeof(int) * g.N);
+    arr = Eccentricity(g);
+    int min = max_dis;
+    for (int i = 0; i < g.N; i++) {
+        if (arr[i] < min) {
+            min = arr[i];
+        }
+    }
+    free(arr);
+    return min;
 }
 
 
@@ -323,6 +368,7 @@ int main() {
         printf("the minimum fare between 1 and 3: %d\n", dis);
         printPath(dis, short_path, g);
         free(short_path);
+        Floyd(g);
         int d = Diameter(g);
         printf("diameter:%d\n", d);
 
