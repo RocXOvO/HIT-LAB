@@ -1,0 +1,5 @@
+---
+triple:          'arm64-apple-darwin'
+binary-path:     '/Users/duchongyang/Documents/C/Exp/2'
+relocations:     []
+...
